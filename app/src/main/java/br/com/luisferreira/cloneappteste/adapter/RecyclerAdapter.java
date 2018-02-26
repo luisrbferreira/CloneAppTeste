@@ -12,7 +12,7 @@ import br.com.luisferreira.cloneappteste.model.Clone;
 import br.com.luisferreira.cloneappteste.R;
 
 /**
- * Created by Luis Ferreira on 25/02/2018.
+ * Created by Luis Ferreira on 24/02/2018.
  */
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {

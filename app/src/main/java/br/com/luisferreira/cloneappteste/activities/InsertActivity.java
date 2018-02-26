@@ -25,7 +25,7 @@ import br.com.luisferreira.cloneappteste.model.Clone;
 import br.com.luisferreira.cloneappteste.R;
 
 /**
- * Created by Luis Ferreira on 26/02/2018.
+ * Created by Luis Ferreira on 25/02/2018.
  */
 
 public class InsertActivity extends AppCompatActivity implements View.OnClickListener {
@@ -35,7 +35,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
     private AutoCompleteTextView textNomeClone;
     private AutoCompleteTextView textIdadeClone;
     private AutoCompleteTextView textDataCriacao;
-
+    private Toolbar toolbar;
     private FloatingActionButton fabEnviarDadosCadastro;
 
     protected ProgressBar progressBar;
@@ -52,13 +52,13 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        pattern = Pattern.compile(NOME_PATTERN);
+
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Cadastro de Clones");
-
-        pattern = Pattern.compile(NOME_PATTERN);
 
         fabEnviarDadosCadastro = findViewById(R.id.fabEnviarDadosCadastro);
         fabEnviarDadosCadastro.setOnClickListener(this);
@@ -84,7 +84,6 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
         clone.setNome(textNomeClone.getText().toString().trim());
 
         String idade = textIdadeClone.getText().toString();
-
         if (!idade.isEmpty()) {
             clone.setIdade(Long.parseLong(idade));
         }
@@ -96,14 +95,14 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         initUsuario();
 
-        String nome = textNomeClone.getText().toString().trim();
-        String idade = textIdadeClone.getText().toString();
+        String NOME = textNomeClone.getText().toString().trim();
+        String IDADE = textIdadeClone.getText().toString();
 
-        matcher = pattern.matcher(nome);
+        matcher = pattern.matcher(NOME);
 
         boolean ok = true;
 
-        if (nome.isEmpty()) {
+        if (NOME.isEmpty()) {
             textNomeClone.setError(getString(R.string.msg_erro_nome_empty));
             ok = false;
         } else {
@@ -120,11 +119,11 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
             }*/
         }
 
-        if (idade.isEmpty()) {
+        if (IDADE.isEmpty()) {
             textIdadeClone.setError(getString(R.string.msg_erro_idade_empty));
             ok = false;
         } else {
-            Long nIdade = Long.parseLong(idade);
+            Long nIdade = Long.parseLong(IDADE);
 
             if (nIdade < 10 || nIdade > 20) {
                 textIdadeClone.setError(getString(R.string.msg_erro_idade_invalida));
@@ -146,7 +145,6 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
             finish();
         } else {
             closeProgressBar();
-            textNomeClone.setFocusable(true);
             fabEnviarDadosCadastro.setEnabled(true);
         }
     }

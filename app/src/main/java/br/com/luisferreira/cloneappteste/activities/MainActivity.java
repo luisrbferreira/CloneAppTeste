@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 clones.removeAll(clones);
 
                 if(!dataSnapshot.exists()){
-                    showSnackbar("Sem dados para exibir!");
+                    showSnackbar("Não existem clones cadastrados!");
                 } else {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Clone clone = snapshot.getValue(Clone.class);
