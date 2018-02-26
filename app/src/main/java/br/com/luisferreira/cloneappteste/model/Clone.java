@@ -6,13 +6,13 @@ package br.com.luisferreira.cloneappteste.model;
 
 public class Clone {
     private String nome;
-    private int idade;
+    private long idade;
     private String dataCriacao;
 
     public Clone() {
     }
 
-    public Clone(String nome, int idade, String dataCriacao) {
+    public Clone(String nome, long idade, String dataCriacao) {
         this.nome = nome;
         this.idade = idade;
         this.dataCriacao = dataCriacao;
@@ -26,11 +26,11 @@ public class Clone {
         this.nome = nome;
     }
 
-    public int getIdade() {
+    public long getIdade() {
         return idade;
     }
 
-    public void setIdade(int idade) {
+    public void setIdade(long idade) {
         this.idade = idade;
     }
 
