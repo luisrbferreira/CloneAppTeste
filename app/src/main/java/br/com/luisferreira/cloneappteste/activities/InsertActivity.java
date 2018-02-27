@@ -107,23 +107,23 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
         clone.setDataCriacao(textDataCriacao.getText().toString());
 
-        if(chkBracoMecanico.isChecked()) {
+        if (chkBracoMecanico.isChecked()) {
             adicionais.add("Braço Mecânico");
         }
 
-        if(chkEsqueletoReforcado.isChecked()) {
+        if (chkEsqueletoReforcado.isChecked()) {
             adicionais.add("Esqueleto Reforçado");
         }
 
-        if(chkSentidosAgucados.isChecked()) {
+        if (chkSentidosAgucados.isChecked()) {
             adicionais.add("Sentidos Aguçados");
         }
 
-        if(chkPeleAdaptativa.isChecked()) {
+        if (chkPeleAdaptativa.isChecked()) {
             adicionais.add("Pele Adaptativa");
         }
 
-        if(chkRaioLaser.isChecked()) {
+        if (chkRaioLaser.isChecked()) {
             adicionais.add("Raio Laser");
         }
 
@@ -148,8 +148,6 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
             if (!matcher.matches()) {
                 textNomeClone.setError(getString(R.string.msg_erro_nome_pattern));
                 ok = false;
-            } else {
-                nomeExist(NOME);
             }
         }
 
@@ -170,35 +168,42 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
             openProgressBar();
 
-            databaseReference.child("clones").push().setValue(clone);
+            Query query = databaseReference.child("clones").orderByChild("nome").equalTo(NOME);
 
-            showToast("Clone cadastrado com sucesso!");
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() != null) {
+                        textNomeClone.setError(getString(R.string.msg_erro_nome_exist));
+                        fabEnviarDadosCadastro.setEnabled(true);
+                    } else {
+                        databaseReference.child("clones").push().setValue(clone);
+
+                        showToast("Clone cadastrado com sucesso!");
+
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
 
             closeProgressBar();
-
-            finish();
         } else {
             closeProgressBar();
             fabEnviarDadosCadastro.setEnabled(true);
         }
     }
 
-    private void nomeExist(String nome) {
-        Query query = databaseReference.child("clones").orderByChild("nome").equalTo(nome);
+    private boolean nomeExist(String nome) {
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() != null) {
-                    textNomeClone.setError(getString(R.string.msg_erro_nome_exist));
-                }
-            }
+        boolean retorno = false;
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+        return retorno;
     }
 
     protected void openProgressBar() {
