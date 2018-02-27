@@ -11,8 +11,12 @@ import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -144,6 +148,8 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
             if (!matcher.matches()) {
                 textNomeClone.setError(getString(R.string.msg_erro_nome_pattern));
                 ok = false;
+            } else {
+                nomeExist(NOME);
             }
         }
 
@@ -175,6 +181,24 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
             closeProgressBar();
             fabEnviarDadosCadastro.setEnabled(true);
         }
+    }
+
+    private void nomeExist(String nome) {
+        Query query = databaseReference.child("clones").orderByChild("nome").equalTo(nome);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null) {
+                    textNomeClone.setError(getString(R.string.msg_erro_nome_exist));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     protected void openProgressBar() {
