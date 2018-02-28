@@ -4,6 +4,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -105,8 +106,6 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
             clone.setIdade(Long.parseLong(idade));
         }
 
-        clone.setDataCriacao(textDataCriacao.getText().toString());
-
         if (chkBracoMecanico.isChecked()) {
             adicionais.add("Braço Mecânico");
         }
@@ -127,12 +126,16 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
             adicionais.add("Raio Laser");
         }
 
-        clone.setAdicionais(adicionais);
+        clone.setDataCriacao(textDataCriacao.getText().toString());
     }
 
     @Override
     public void onClick(View v) {
         initClone();
+
+        clone.setAdicionais(adicionais);
+
+        Log.e("Adicionais", adicionais.toString());
 
         String NOME = textNomeClone.getText().toString().trim();
         String IDADE = textIdadeClone.getText().toString();
@@ -175,6 +178,9 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null) {
                         textNomeClone.setError(getString(R.string.msg_erro_nome_exist));
+
+                        adicionais.clear();
+
                         fabEnviarDadosCadastro.setEnabled(true);
                     } else {
                         databaseReference.child("clones").push().setValue(clone);
@@ -193,17 +199,10 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
             closeProgressBar();
         } else {
+            adicionais.clear();
             closeProgressBar();
             fabEnviarDadosCadastro.setEnabled(true);
         }
-    }
-
-    private boolean nomeExist(String nome) {
-
-        boolean retorno = false;
-
-
-        return retorno;
     }
 
     protected void openProgressBar() {
