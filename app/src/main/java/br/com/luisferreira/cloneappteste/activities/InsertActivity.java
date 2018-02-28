@@ -4,10 +4,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -35,28 +36,23 @@ import br.com.luisferreira.cloneappteste.R;
 
 public class InsertActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Clone clone;
-
     private AutoCompleteTextView textNomeClone;
     private AutoCompleteTextView textIdadeClone;
     private AutoCompleteTextView textDataCriacao;
     private Toolbar toolbar;
-    private FloatingActionButton fabEnviarDadosCadastro;
+    private Button btnCadastrar;
     private CheckBox chkBracoMecanico;
     private CheckBox chkEsqueletoReforcado;
     private CheckBox chkSentidosAgucados;
     private CheckBox chkPeleAdaptativa;
     private CheckBox chkRaioLaser;
-
     protected ProgressBar progressBar;
 
     private DatabaseReference databaseReference;
-
     private Pattern pattern;
     private Matcher matcher;
-
+    private Clone clone;
     private List<String> adicionais = new ArrayList<>();
-
     private static final String NOME_PATTERN = "[A-Z]{3}[0-9]{4}";
 
     @Override
@@ -64,16 +60,16 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert);
 
-        pattern = Pattern.compile(NOME_PATTERN);
-
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Cadastro de Clones");
 
-        fabEnviarDadosCadastro = findViewById(R.id.fabEnviarDadosCadastro);
-        fabEnviarDadosCadastro.setOnClickListener(this);
+        btnCadastrar = findViewById(R.id.btnCadastrar);
+        btnCadastrar.setOnClickListener(this);
+
+        pattern = Pattern.compile(NOME_PATTERN);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -99,6 +95,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
     protected void initClone() {
         clone = new Clone();
+
         clone.setNome(textNomeClone.getText().toString().trim());
 
         String idade = textIdadeClone.getText().toString();
@@ -127,24 +124,21 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         clone.setDataCriacao(textDataCriacao.getText().toString());
+        clone.setAdicionais(adicionais);
     }
 
     @Override
     public void onClick(View v) {
         initClone();
 
-        clone.setAdicionais(adicionais);
+        String nome = textNomeClone.getText().toString().trim();
+        String idade = textIdadeClone.getText().toString();
 
-        Log.e("Adicionais", adicionais.toString());
-
-        String NOME = textNomeClone.getText().toString().trim();
-        String IDADE = textIdadeClone.getText().toString();
-
-        matcher = pattern.matcher(NOME);
+        matcher = pattern.matcher(nome);
 
         boolean ok = true;
 
-        if (NOME.isEmpty()) {
+        if (nome.isEmpty()) {
             textNomeClone.setError(getString(R.string.msg_erro_nome_empty));
             ok = false;
         } else {
@@ -154,11 +148,11 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
 
-        if (IDADE.isEmpty()) {
+        if (idade.isEmpty()) {
             textIdadeClone.setError(getString(R.string.msg_erro_idade_empty));
             ok = false;
         } else {
-            Long nIdade = Long.parseLong(IDADE);
+            Long nIdade = Long.parseLong(idade);
 
             if (nIdade < 10 || nIdade > 20) {
                 textIdadeClone.setError(getString(R.string.msg_erro_idade_invalida));
@@ -167,12 +161,11 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         if (ok) {
-            fabEnviarDadosCadastro.setEnabled(false);
+            btnCadastrar.setEnabled(false);
 
             openProgressBar();
 
-            Query query = databaseReference.child("clones").orderByChild("nome").equalTo(NOME);
-
+            Query query = databaseReference.child("clones").orderByChild("nome").equalTo(nome);
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -181,7 +174,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
                         adicionais.clear();
 
-                        fabEnviarDadosCadastro.setEnabled(true);
+                        btnCadastrar.setEnabled(true);
                     } else {
                         databaseReference.child("clones").push().setValue(clone);
 
@@ -201,7 +194,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
         } else {
             adicionais.clear();
             closeProgressBar();
-            fabEnviarDadosCadastro.setEnabled(true);
+            btnCadastrar.setEnabled(true);
         }
     }
 
