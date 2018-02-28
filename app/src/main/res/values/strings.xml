@@ -7,5 +7,4 @@
     <string name="msg_erro_nome_exist">Já existe um clone com esse nome cadastrado no nosso sistema.</string>
     <string name="msg_erro_idade_empty">O campo idade é obrigatório!</string>
     <string name="msg_erro_idade_invalida">A idade deve estar entre 10 e 20.</string>
-    <string name="title_activity_main2">Main2Activity</string>
 </resources>
