@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -36,9 +37,9 @@ import br.com.luisferreira.cloneappteste.R;
 
 public class InsertActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private AutoCompleteTextView textNomeClone;
-    private AutoCompleteTextView textIdadeClone;
-    private AutoCompleteTextView textDataCriacao;
+    private EditText textNomeClone;
+    private EditText textIdadeClone;
+    private EditText textDataCriacao;
     private Toolbar toolbar;
     private Button btnCadastrar;
     private CheckBox chkBracoMecanico;
