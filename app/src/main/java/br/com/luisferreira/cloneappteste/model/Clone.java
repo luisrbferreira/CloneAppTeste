@@ -7,18 +7,29 @@ import java.util.List;
  */
 
 public class Clone {
+
+    private String id;
+
     private String nome;
-    private long idade;
+    private int idade;
     private String dataCriacao;
     private List<String> adicionais;
 
     public Clone() {
     }
 
-    public Clone(String nome, long idade, String dataCriacao) {
+    public Clone(String nome, int idade, String dataCriacao) {
         this.nome = nome;
         this.idade = idade;
         this.dataCriacao = dataCriacao;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -33,7 +44,7 @@ public class Clone {
         return idade;
     }
 
-    public void setIdade(long idade) {
+    public void setIdade(int idade) {
         this.idade = idade;
     }
 

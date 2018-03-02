@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -37,7 +38,6 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
     private EditText textNomeClone;
     private EditText textIdadeClone;
-    private EditText textDataCriacao;
     private Toolbar toolbar;
     private Button btnCadastrar;
     private CheckBox chkBracoMecanico;
@@ -54,6 +54,13 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
     private List<String> adicionais = new ArrayList<>();
     private static final String NOME_PATTERN = "[A-Z]{3}[0-9]{4}";
 
+    private SimpleDateFormat simpleDateFormat;
+
+    boolean isUpdating;
+    String nomeClone;
+    String idadeClone;
+    String adicionaisClone;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +72,8 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Cadastro de Clones");
 
+        simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
         btnCadastrar = findViewById(R.id.btnCadastrar);
         btnCadastrar.setOnClickListener(this);
 
@@ -72,14 +81,14 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
+        isUpdating = getIntent().getBooleanExtra("isUpdating", false);
+
         initViews();
     }
 
     private void initViews() {
         textNomeClone = findViewById(R.id.textNomeClone);
         textIdadeClone = findViewById(R.id.textIdadeClone);
-        textDataCriacao = findViewById(R.id.textDataCriacao);
-        progressBar = findViewById(R.id.sign_up_progress);
 
         chkBracoMecanico = findViewById(R.id.chkBracoMecanico);
         chkEsqueletoReforcado = findViewById(R.id.chkEsqueletoReforcado);
@@ -87,9 +96,36 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
         chkPeleAdaptativa = findViewById(R.id.chkPeleAdaptativa);
         chkRaioLaser = findViewById(R.id.chkRaioLaser);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        textDataCriacao.setText(simpleDateFormat.format(new Date()));
-        textDataCriacao.setEnabled(false);
+        progressBar = findViewById(R.id.sign_up_progress);
+
+        if (isUpdating) {
+            nomeClone = getIntent().getStringExtra("textViewNomeClone");
+            idadeClone = getIntent().getStringExtra("textViewIdadeClone");
+            adicionaisClone = getIntent().getStringExtra("textViewAdicionais");
+
+            textNomeClone.setText(nomeClone);
+            textIdadeClone.setText(idadeClone);
+
+            if(adicionaisClone.contains("Braço Mecânico")) {
+                chkBracoMecanico.setChecked(true);
+            }
+
+            if(adicionaisClone.contains("Esqueleto Reforçado")) {
+                chkEsqueletoReforcado.setChecked(true);
+            }
+
+            if(adicionaisClone.contains("Sentidos Aguçados")) {
+                chkSentidosAgucados.setChecked(true);
+            }
+
+            if(adicionaisClone.contains("Pele Adaptativa")) {
+                chkPeleAdaptativa.setChecked(true);
+            }
+
+            if(adicionaisClone.contains("Raio Laser")) {
+                chkRaioLaser.setChecked(true);
+            }
+        }
     }
 
     protected void initClone() {
@@ -99,7 +135,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
         String idade = textIdadeClone.getText().toString();
         if (!idade.isEmpty()) {
-            clone.setIdade(Long.parseLong(idade));
+            clone.setIdade(Integer.parseInt(idade));
         }
 
         if (chkBracoMecanico.isChecked()) {
@@ -122,7 +158,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
             adicionais.add("Raio Laser");
         }
 
-        clone.setDataCriacao(textDataCriacao.getText().toString());
+        clone.setDataCriacao(simpleDateFormat.format(new Date()));
         clone.setAdicionais(adicionais);
     }
 

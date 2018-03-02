@@ -54,11 +54,12 @@ public class MainActivity extends AppCompatActivity {
     private void initViews() {
         recyclerView = findViewById(R.id.rv_clones);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerAdapter = new RecyclerAdapter(clones);
+        recyclerAdapter = new RecyclerAdapter(this, clones);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerAdapter.notifyDataSetChanged();
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerAdapter.notifyDataSetChanged();
 
         fabNovoClone = findViewById(R.id.fabNovoClone);
 

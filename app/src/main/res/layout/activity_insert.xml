@@ -80,38 +80,19 @@
                 android:inputType="number" />
         </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInputData"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputIdade">
-
-            <AutoCompleteTextView
-                android:id="@+id/textDataCriacao"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="Data de Criação"
-                android:inputType="date"
-                android:visibility="gone" />
-        </android.support.design.widget.TextInputLayout>
-
         <TextView
             android:id="@+id/lblAdicionais"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:text="Adicionais:"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="#787777"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputData" />
+            app:layout_constraintTop_toBottomOf="@+id/textInputIdade"
+            android:layout_marginLeft="16dp" />
 
         <CheckBox
             android:id="@+id/chkBracoMecanico"
