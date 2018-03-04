@@ -1,79 +1,27 @@
 {
   "project_info": {
-    "project_number": "506193627776",
-    "firebase_url": "https://clone-teste.firebaseio.com",
-    "project_id": "clone-teste",
-    "storage_bucket": "clone-teste.appspot.com"
+    "project_number": "85911682940",
+    "firebase_url": "https://clone-teste-60955.firebaseio.com",
+    "project_id": "clone-teste-60955",
+    "storage_bucket": "clone-teste-60955.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:506193627776:android:a888a5cb924044c5",
-        "android_client_info": {
-          "package_name": "com.luisferreira.clone_teste"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "506193627776-4dja6l1o2su21h63d63og0ketdh2618i.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.luisferreira.clone_teste",
-            "certificate_hash": "60a0f69910f4b49e86c68f1b2f88f61845cd7cd9"
-          }
-        },
-        {
-          "client_id": "506193627776-1qk1sjq9btet5s3j9t9mtoihaggc167b.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCQObdYxoSw3rS5Jp6kj-z3XkBXTkyAfzw"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "506193627776-1qk1sjq9btet5s3j9t9mtoihaggc167b.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:506193627776:android:97e8252016bf91b8",
+        "mobilesdk_app_id": "1:85911682940:android:97e8252016bf91b8",
         "android_client_info": {
           "package_name": "br.com.luisferreira.cloneappteste"
         }
       },
       "oauth_client": [
         {
-          "client_id": "506193627776-3a940kid7u7bb1huu44n14guof2b07sv.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "br.com.luisferreira.cloneappteste",
-            "certificate_hash": "24a477186fc75d3e6b73d2b934c25882cdea1347"
-          }
-        },
-        {
-          "client_id": "506193627776-1qk1sjq9btet5s3j9t9mtoihaggc167b.apps.googleusercontent.com",
+          "client_id": "85911682940-5dnla4irn2rocksdpbtg4jjetn3p8sht.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCQObdYxoSw3rS5Jp6kj-z3XkBXTkyAfzw"
+          "current_key": "AIzaSyAhvnHQRCa6ptJJd858Oh2SYRVHS7b1yuw"
         }
       ],
       "services": {
@@ -81,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "506193627776-1qk1sjq9btet5s3j9t9mtoihaggc167b.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

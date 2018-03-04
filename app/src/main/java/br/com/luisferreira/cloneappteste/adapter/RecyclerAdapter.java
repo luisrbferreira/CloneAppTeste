@@ -1,18 +1,26 @@
 package br.com.luisferreira.cloneappteste.adapter;
 
 import android.content.Context;
+
 import android.content.Intent;
+import android.graphics.Paint;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
-import br.com.luisferreira.cloneappteste.Interface.ItemClickListener;
 import br.com.luisferreira.cloneappteste.activities.InsertActivity;
 import br.com.luisferreira.cloneappteste.model.Clone;
 import br.com.luisferreira.cloneappteste.R;
@@ -23,12 +31,14 @@ import br.com.luisferreira.cloneappteste.R;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
-    private List<Clone> clones;
+    private List<Clone> cloneList;
     private Context context;
+    private FirebaseFirestore firebaseFirestore;
 
-    public RecyclerAdapter(Context context, List<Clone> clones) {
+    public RecyclerAdapter(List<Clone> cloneList, Context context, FirebaseFirestore firebaseFirestore) {
+        this.cloneList = cloneList;
         this.context = context;
-        this.clones = clones;
+        this.firebaseFirestore = firebaseFirestore;
     }
 
     @Override
@@ -40,40 +50,36 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Clone clone = clones.get(position);
+        final int itemPosition = position;
+        final Clone clone = cloneList.get(itemPosition);
 
-        holder.textViewNomeClone.setText(clones.get(position).getNome());
-        holder.textViewIdadeClone.setText(String.valueOf(clones.get(position).getIdade()));
-        holder.textViewDataCriacao.setText(clones.get(position).getDataCriacao());
+        holder.textViewNomeClone.setText(clone.getNome());
+        holder.textViewIdadeClone.setText(String.valueOf(clone.getIdade()) + " Anos");
+        holder.textViewDataCriacao.setText(clone.getDataCriacao());
 
-        if (clone.getAdicionais() == null) {
+        if (clone.getAdicionais().isEmpty()) {
             holder.textViewAdicionais.setText("Este clone não possui itens adicionais!");
         } else {
             holder.textViewAdicionais.setText(TextUtils.join(", ", clone.getAdicionais()));
         }
 
-        holder.setClickListener(new ItemClickListener() {
+        holder.btnEditar.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view, int position) {
-                Intent intent = new Intent(view.getContext(), InsertActivity.class);
-                intent.putExtra("isUpdating", true);
-                intent.putExtra("textViewNomeClone", holder.textViewNomeClone.getText());
-                intent.putExtra("textViewIdadeClone", holder.textViewIdadeClone.getText());
-                intent.putExtra("textViewAdicionais", holder.textViewAdicionais.getText());
-                context.startActivity(intent);
+            public void onClick(View v) {
+                updateClone(clone);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return clones.size();
+        return cloneList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView textViewNomeClone, textViewIdadeClone, textViewDataCriacao, textViewAdicionais;
-        private ItemClickListener clickListener;
+        ImageButton btnEditar;
 
         public ViewHolder(View view) {
             super(view);
@@ -82,22 +88,31 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             textViewDataCriacao = view.findViewById(R.id.textViewDataCriacao);
             textViewAdicionais = view.findViewById(R.id.textViewAdicionais);
 
-            view.setOnClickListener(this);
+            btnEditar = view.findViewById(R.id.btnEditar);
         }
+    }
 
-        public void setClickListener(ItemClickListener itemClickListener) {
-            this.clickListener = itemClickListener;
-        }
+    private void updateClone(Clone clone) {
+        Intent intent = new Intent(context, InsertActivity.class);
+        intent.putExtra("UpdateCloneId", clone.getId());
+        intent.putExtra("UpdateCloneNome", clone.getNome());
+        intent.putExtra("UpdateCloneIdade", clone.getIdade());
+        intent.putExtra("UpdateCloneAdicionais", clone.getAdicionais().toString());
+        context.startActivity(intent);
+    }
 
-        @Override
-        public void onClick(View v) {
-            clickListener.onClick(v, getAdapterPosition());
-        }
-
-        public void removeItem(int position) {
-            clones.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, clones.size());
-        }
+    public void deleteClone(String id, final int position) {
+        firebaseFirestore.collection("clones")
+                .document(id)
+                .delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        cloneList.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, cloneList.size());
+                        Toast.makeText(context, "O clone foi deletado!", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
