@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-    tools:context=".activities.InsertActivity">
+    tools:context=".activities.CloneActivity">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -175,7 +175,7 @@
             app:layout_constraintTop_toBottomOf="@+id/chkSentidosAgucados" />
 
         <Button
-            android:id="@+id/btnCadastrar"
+            android:id="@+id/btnEditarCadastrar"
             style="@style/styleButton"
             android:layout_width="@dimen/btn_width"
             android:layout_height="wrap_content"

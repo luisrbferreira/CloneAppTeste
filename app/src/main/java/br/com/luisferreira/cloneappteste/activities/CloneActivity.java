@@ -14,14 +14,10 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,14 +34,14 @@ import br.com.luisferreira.cloneappteste.R;
  * Created by Luis Ferreira on 25/02/2018.
  */
 
-public class InsertActivity extends AppCompatActivity implements View.OnClickListener {
+public class CloneActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "AddCloneActivity";
 
     private EditText textNomeClone;
     private EditText textIdadeClone;
     private Toolbar toolbar;
-    private Button btnCadastrar;
+    private Button btnEditarCadastrar;
     private CheckBox chkBracoMecanico;
     private CheckBox chkEsqueletoReforcado;
     private CheckBox chkSentidosAgucados;
@@ -63,11 +59,11 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
     private FirebaseFirestore firebaseFirestore;
 
-    private Bundle bundle;
-    private String id = "";
-    private String nomeClone;
-    private String idadeClone;
-    private String adicionaisClone;
+    boolean isUpdating;
+    String id;
+    String nomeClone;
+    String idadeClone;
+    String adicionaisClone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,19 +75,22 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        bundle = getIntent().getExtras();
-        if (bundle != null) {
-            getSupportActionBar().setTitle("Editar Clone");
+        isUpdating = getIntent().getBooleanExtra("isUpdating", false);
+        btnEditarCadastrar = findViewById(R.id.btnEditarCadastrar);
 
-            id = bundle.getString("UpdateCloneId");
+        if (isUpdating) {
+            getSupportActionBar().setTitle("Editar Clone");
+            btnEditarCadastrar.setText("Salvar");
+
+            id = getIntent().getStringExtra("idClone");
         } else {
             getSupportActionBar().setTitle("Cadastrado de Clones");
+            btnEditarCadastrar.setText("Cadastrar");
         }
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        btnCadastrar = findViewById(R.id.btnCadastrar);
-        btnCadastrar.setOnClickListener(this);
+        btnEditarCadastrar.setOnClickListener(this);
 
         pattern = Pattern.compile(NOME_PATTERN);
 
@@ -109,12 +108,13 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
         progressBar = findViewById(R.id.sign_up_progress);
 
-        if (id != null) {
-            nomeClone = bundle.getString("UpdateCloneNome");
-            idadeClone = bundle.getString("UpdateCloneIdade");
-            adicionaisClone = bundle.getString("UpdateCloneAdicionais");
+        if (isUpdating) {
+            nomeClone = getIntent().getStringExtra("textViewNomeClone");
+            idadeClone = getIntent().getStringExtra("textViewIdadeClone");
+            adicionaisClone = getIntent().getStringExtra("textViewAdicionais");
 
             textNomeClone.setText(nomeClone);
+            textNomeClone.setSelection(textNomeClone.getText().length());
             textIdadeClone.setText(idadeClone);
 
             if(adicionaisClone.contains("Braço Mecânico")) {
@@ -207,11 +207,11 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         if (ok) {
-            btnCadastrar.setEnabled(false);
+            btnEditarCadastrar.setEnabled(false);
 
             openProgressBar();
 
-            if (id.length() > 0) {
+            if (isUpdating) {
                 updateClone(id, clone.getNome(), (int) clone.getIdade(), clone.getDataCriacao(), clone.getAdicionais());
             } else {
 
@@ -225,13 +225,13 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                                         if (document.getData().toString().contains(nome)) {
                                             textNomeClone.setError(getString(R.string.msg_erro_nome_exist));
                                             Log.d(TAG, document.getId() + " => " + document.getData());
-                                            Toast.makeText(InsertActivity.this, document.getId() + " => " + document.getData(),
+                                            Toast.makeText(CloneActivity.this, document.getId() + " => " + document.getData(),
                                                     Toast.LENGTH_SHORT).show();
                                         } else {
                                             addClone(clone.getNome(), (int) clone.getIdade(), clone.getDataCriacao(), clone.getAdicionais());
                                         }
                                     }
-                                    btnCadastrar.setEnabled(true);
+                                    btnEditarCadastrar.setEnabled(true);
                                 } else {
                                     Log.d(TAG, "Error getting documents: ", task.getException());
                                 }
@@ -246,7 +246,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
         } else {
             adicionais.clear();
             closeProgressBar();
-            btnCadastrar.setEnabled(true);
+            btnEditarCadastrar.setEnabled(true);
         }
     }
 

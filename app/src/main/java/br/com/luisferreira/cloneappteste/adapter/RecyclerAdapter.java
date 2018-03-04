@@ -3,7 +3,6 @@ package br.com.luisferreira.cloneappteste.adapter;
 import android.content.Context;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -11,7 +10,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +19,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
-import br.com.luisferreira.cloneappteste.activities.InsertActivity;
+import br.com.luisferreira.cloneappteste.Interface.ItemClickListener;
+import br.com.luisferreira.cloneappteste.activities.CloneActivity;
 import br.com.luisferreira.cloneappteste.model.Clone;
 import br.com.luisferreira.cloneappteste.R;
 
@@ -63,10 +62,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             holder.textViewAdicionais.setText(TextUtils.join(", ", clone.getAdicionais()));
         }
 
-        holder.btnEditar.setOnClickListener(new View.OnClickListener() {
+        holder.setClickListener(new ItemClickListener() {
             @Override
-            public void onClick(View v) {
-                updateClone(clone);
+            public void onClick(View view, int position) {
+                Intent intent = new Intent(view.getContext(), CloneActivity.class);
+                intent.putExtra("isUpdating", true);
+                intent.putExtra("idClone", clone.getId());
+                intent.putExtra("textViewNomeClone", holder.textViewNomeClone.getText());
+                intent.putExtra("textViewIdadeClone", holder.textViewIdadeClone.getText());
+                intent.putExtra("textViewAdicionais", holder.textViewAdicionais.getText());
+                context.startActivity(intent);
             }
         });
     }
@@ -76,10 +81,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         return cloneList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView textViewNomeClone, textViewIdadeClone, textViewDataCriacao, textViewAdicionais;
-        ImageButton btnEditar;
+        private ItemClickListener clickListener;
 
         public ViewHolder(View view) {
             super(view);
@@ -88,17 +93,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             textViewDataCriacao = view.findViewById(R.id.textViewDataCriacao);
             textViewAdicionais = view.findViewById(R.id.textViewAdicionais);
 
-            btnEditar = view.findViewById(R.id.btnEditar);
+            view.setOnClickListener(this);
         }
-    }
 
-    private void updateClone(Clone clone) {
-        Intent intent = new Intent(context, InsertActivity.class);
-        intent.putExtra("UpdateCloneId", clone.getId());
-        intent.putExtra("UpdateCloneNome", clone.getNome());
-        intent.putExtra("UpdateCloneIdade", clone.getIdade());
-        intent.putExtra("UpdateCloneAdicionais", clone.getAdicionais().toString());
-        context.startActivity(intent);
+        public void setClickListener(ItemClickListener itemClickListener) {
+            this.clickListener = itemClickListener;
+        }
+
+        @Override
+        public void onClick(View v) {
+            clickListener.onClick(v, getAdapterPosition());
+        }
     }
 
     public void deleteClone(String id, final int position) {

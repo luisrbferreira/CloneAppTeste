@@ -18,8 +18,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.InsertActivity" />
-        <activity android:name=".activities.EditActivity" />
+        <activity android:name=".activities.CloneActivity" />
     </application>
-
 </manifest>

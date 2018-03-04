@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void callInsert(View view) {
-        Intent intent = new Intent(this, InsertActivity.class);
+        Intent intent = new Intent(this, CloneActivity.class);
         startActivity(intent);
     }
 
