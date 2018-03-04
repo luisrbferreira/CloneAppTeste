@@ -68,7 +68,7 @@ public class CloneActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_insert);
+        setContentView(R.layout.activity_clone);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
