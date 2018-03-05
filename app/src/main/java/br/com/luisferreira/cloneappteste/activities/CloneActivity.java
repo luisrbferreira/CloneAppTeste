@@ -14,10 +14,19 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -117,23 +126,23 @@ public class CloneActivity extends AppCompatActivity implements View.OnClickList
             textNomeClone.setSelection(textNomeClone.getText().length());
             textIdadeClone.setText(idadeClone);
 
-            if(adicionaisClone.contains("Braço Mecânico")) {
+            if (adicionaisClone.contains("Braço Mecânico")) {
                 chkBracoMecanico.setChecked(true);
             }
 
-            if(adicionaisClone.contains("Esqueleto Reforçado")) {
+            if (adicionaisClone.contains("Esqueleto Reforçado")) {
                 chkEsqueletoReforcado.setChecked(true);
             }
 
-            if(adicionaisClone.contains("Sentidos Aguçados")) {
+            if (adicionaisClone.contains("Sentidos Aguçados")) {
                 chkSentidosAgucados.setChecked(true);
             }
 
-            if(adicionaisClone.contains("Pele Adaptativa")) {
+            if (adicionaisClone.contains("Pele Adaptativa")) {
                 chkPeleAdaptativa.setChecked(true);
             }
 
-            if(adicionaisClone.contains("Raio Laser")) {
+            if (adicionaisClone.contains("Raio Laser")) {
                 chkRaioLaser.setChecked(true);
             }
         }
@@ -175,6 +184,7 @@ public class CloneActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
+
         initClone();
 
         final String nome = textNomeClone.getText().toString().trim();
@@ -214,32 +224,7 @@ public class CloneActivity extends AppCompatActivity implements View.OnClickList
             if (isUpdating) {
                 updateClone(id, clone.getNome(), (int) clone.getIdade(), clone.getDataCriacao(), clone.getAdicionais());
             } else {
-
-                /*firebaseFirestore.collection("clones")
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (DocumentSnapshot document : task.getResult()) {
-                                        if (document.getData().toString().contains(nome)) {
-                                            textNomeClone.setError(getString(R.string.msg_erro_nome_exist));
-                                            Log.d(TAG, document.getId() + " => " + document.getData());
-                                            Toast.makeText(CloneActivity.this, document.getId() + " => " + document.getData(),
-                                                    Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            addClone(clone.getNome(), (int) clone.getIdade(), clone.getDataCriacao(), clone.getAdicionais());
-                                        }
-                                    }
-                                    btnEditarCadastrar.setEnabled(true);
-                                } else {
-                                    Log.d(TAG, "Error getting documents: ", task.getException());
-                                }
-                            }
-                        });*/
-
                 addClone(clone.getNome(), (int) clone.getIdade(), clone.getDataCriacao(), clone.getAdicionais());
-
             }
 
             closeProgressBar();
@@ -269,7 +254,7 @@ public class CloneActivity extends AppCompatActivity implements View.OnClickList
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "Erro ao atualizar", e);
+                        Log.e(TAG, "Erro ao atualizar.", e);
 
                         showToast("Não foi possível atualizar o clone!");
                     }
